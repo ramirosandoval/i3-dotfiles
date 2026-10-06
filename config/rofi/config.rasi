@@ -1,0 +1,29 @@
+configuration {
+    modi: "drun,run,window";
+    font: "JetBrains Mono 11";
+    show-icons: true;
+    drun-display-format: "{name}";
+    display-drun: "Aplicaciones";
+    display-run: "Comando";
+    display-window: "Ventanas";
+}
+@theme "default"
+* {
+    background: #1e2030;
+    foreground: #cad3f5;
+    selected-normal-background: #363a4f;
+    selected-normal-foreground: #8aadf4;
+    normal-background: #1e2030;
+    normal-foreground: #cad3f5;
+    alternate-normal-background: #24273a;
+    alternate-normal-foreground: #cad3f5;
+    border-color: #8aadf4;
+    separatorcolor: #363a4f;
+}
+window { width: 640px; border: 2px; border-radius: 12px; padding: 18px; }
+mainbox { spacing: 12px; }
+inputbar { padding: 10px; spacing: 10px; }
+listview { lines: 8; fixed-height: false; border: 0px; spacing: 4px; }
+element { padding: 10px; border: 0px; border-radius: 6px; }
+element-icon { size: 24px; }
+message { border: 0px; }
