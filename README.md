@@ -1,15 +1,21 @@
 # i3-dotfiles
 
-Configuración compartida de i3, Polybar y Rofi: tema oscuro/azul, atajos,
-menú de configuración, volumen, Ethernet/Wi-Fi, batería, Pomodoro y
-atenuación de pantalla por software. Fecha en español y reloj centrado.
-Sin claves SSH, contraseñas, IP privadas ni configuraciones de servicios personales.
+Personalización de i3 con Polybar y Rofi: tema oscuro con acentos azules,
+lanzador de aplicaciones, controles de audio y red, brillo por software,
+batería y Pomodoro.
 
-## Instalar en otra PC
+## Requisitos
 
-Base verificada: Debian 13, sesión **i3 sobre X11**, i3 4.24, Polybar 3.7.2
-con soporte i3/PulseAudio/network y PipeWire/WirePlumber.
-No es una configuración para GNOME ni Wayland.
+- Linux con una sesión **i3 sobre X11**; no funciona como tema de GNOME o Wayland.
+- i3 4.24 y Polybar 3.7.2 son las versiones comprobadas.
+- Polybar con soporte para i3, PulseAudio y red.
+- PipeWire/WirePlumber y NetworkManager.
+- Fuentes JetBrains Mono y FontAwesome.
+- Locale `es_AR.UTF-8` para la fecha en español.
+
+## Instalar
+
+### 1. Instalar las dependencias
 
 En Debian 13:
 
@@ -21,8 +27,10 @@ sudo apt install git python3 i3-wm polybar rofi alacritty pavucontrol \
   fonts-jetbrains-mono fonts-font-awesome locales-all libglib2.0-bin
 ```
 
-El repositorio es público; para hacer push necesitás autorizar tu cuenta
-GitHub en ese equipo. No copies claves privadas de otra PC.
+En otras distribuciones, instalá los paquetes equivalentes antes de continuar.
+El instalador comprueba los comandos necesarios y avisa si falta alguno.
+
+### 2. Clonar y aplicar la configuración
 
 ```bash
 git clone https://github.com/ramirosandoval/i3-dotfiles.git ~/i3-dotfiles
@@ -30,103 +38,119 @@ cd ~/i3-dotfiles
 python3 install.py
 ```
 
-Si ya estás en i3, presioná **Super+Shift+R**; si no, elegí la sesión i3
-al iniciar sesión. El instalador no reinicia tu escritorio automáticamente.
+El instalador enlaza los archivos del repositorio con `~/.config`, conserva
+los archivos ajenos a esta configuración y respalda los reemplazados en
+`~/.local/state/i3-dotfiles/backup-*`. Si la validación de i3 falla, restaura
+los archivos reemplazados.
 
-El instalador enlaza **archivos individuales**, conserva otros archivos y
-respalda lo reemplazado en `~/.local/state/i3-dotfiles/backup-*`.
-Si la validación de i3 falla, restaura los archivos reemplazados.
-No muevas ni borres el clon después de instalar: los enlaces apuntan a él.
+**Conservá el repositorio en esa ubicación:** los enlaces apuntan a él.
+Editar un archivo enlazado también modifica el archivo del repositorio.
 
-## Actualizar todas las PCs
+### 3. Activar
 
-En cada equipo, dentro de su clon:
+Si ya estás en i3, presioná **Super+Shift+R**. Si no, elegí la sesión i3 al
+iniciar sesión. El instalador no reinicia el escritorio automáticamente.
+`Super` es la tecla Windows en la mayoría de los teclados.
+
+## Actualizar
+
+En cada equipo:
 
 ```bash
+cd ~/i3-dotfiles
 git pull --ff-only
 python3 install.py
 ```
 
-Luego **Super+Shift+R**. Los enlaces reciben cambios de Git directamente;
-volver a ejecutar el instalador incorpora también archivos nuevos.
-Editar los archivos enlazados edita el clon: revisá `git diff` antes de commitear.
-
-## Ajustes locales por equipo
-
-El instalador conserva o crea `~/.config/i3/local.conf`. No se sube a Git.
-Usalo para resoluciones, programas propios del equipo y agentes de autenticación.
-Ejemplo para la PC original, **solo si estos comandos existen y los necesitás**:
-
-```i3
-exec --no-startup-id xrandr --output HDMI-A-0 --mode 1920x1080
-exec --no-startup-id systemctl --user restart input-leap-server
-```
-
-En la laptop no hace falta forzar la pantalla a la resolución de la PC.
-El antiguo comando del agente Polkit de esta PC no se incluyó porque su ruta
-no existe en los equipos revisados. Si necesitás un agente para diálogos de
-privilegios, instalá uno y agregá su comando a `local.conf` (por ejemplo
-`lxpolkit`, paquete `lxpolkit` en Debian 13).
-
-Polybar muestra Ethernet y Wi-Fi por separado, con acceso a `nmtui`.
-Para cada tipo elige una interfaz conectada; si está desconectado, usa la
-primera interfaz física administrada. Ignora bridges y VPN.
-La selección se hace al arrancar la barra: recargala al cambiar de interfaz.
-El brillo usa la pantalla primaria activa, o la primera activa si no hay primaria.
-Podés fijar ambos en `~/.config/polybar/local.env`, fuera de Git:
-
-```sh
-ETHERNET_INTERFACE=enp1s0
-WIFI_INTERFACE=wlp0s20f3
-BRIGHTNESS_OUTPUT=eDP-1
-```
-
-Estos nombres son ejemplos: consultá `nmcli device` y `xrandr --listmonitors`.
-El archivo `local.env` se ejecuta como código shell de tu usuario: no uses
-archivos de terceros que no hayas revisado.
+Luego presioná **Super+Shift+R**. Volver a ejecutar el instalador incorpora
+los archivos nuevos sin reemplazar los ajustes locales.
 
 ## Controles
 
-- **Super+Enter**: Alacritty.
-- **Super+D**: aplicaciones; clic derecho en el lanzador: ventanas.
-- **Super+,** o engranaje: audio/micrófono, red, archivos, fondo,
-  capturas, separación de ventanas, editar configuración, recargar y bloquear.
-- **Super++**: silenciar/restaurar el micrófono predeterminado.
-- **Volumen**: rueda ajusta; clic silencia; clic derecho abre Pavucontrol.
-- **Sol / `% SW`**: rueda ajusta en pasos de 5%, entre 20% y 100%;
-  clic vuelve a 100%. Es atenuación por software, **no retroiluminación física**;
-  no reduce el consumo de la pantalla y no persiste después de reiniciar X11.
-- Se conservan los atajos de escritorios, movimiento, resize y bloqueo.
-  Los atajos con `ñ` suponen teclado español; las flechas siguen disponibles.
+| Control | Acción |
+| --- | --- |
+| `Super+Enter` | Abrir Alacritty |
+| `Super+D` | Abrir el lanzador de aplicaciones |
+| Clic derecho en el lanzador | Seleccionar una ventana |
+| `Super+,` o engranaje | Abrir el menú de configuración |
+| `Super` + tecla `+` | Silenciar o restaurar el micrófono predeterminado |
+| Rueda sobre volumen | Ajustar el volumen |
+| Clic sobre volumen | Silenciar o restaurar la salida de audio |
+| Clic derecho sobre volumen | Abrir Pavucontrol |
+| Clic sobre Ethernet o Wi-Fi | Abrir el selector de conexiones |
+| Rueda sobre el sol | Ajustar la atenuación entre 20 % y 100 %, en pasos de 5 % |
+| Clic sobre el sol | Restaurar el 100 % |
+| Clic izquierdo sobre Pomodoro | Iniciar, pausar o continuar |
+| Clic derecho sobre Pomodoro | Reiniciar a 25:00 |
 
-- **Batería**: solo icono y porcentaje; rayo al cargar, enchufe si está
-  conectada y rojo al bajar a 15%. Sin batería, el indicador queda vacío.
-- **Pomodoro**, después de los escritorios: solo reloj y `MM:SS`; clic
-  izquierdo inicia/pausa/continúa, clic derecho reinicia a 25:00.
-  Concentración de 25 minutos, descanso de 5 y descanso de 15 cada cuatro
-  sesiones. Notifica al terminar y deja la siguiente etapa pausada.
-  El reloj es azul al trabajar y verde al descansar. Estado local en
-  `~/.local/state/polybar-pomodoro/`, fuera de Git; recargar no reinicia.
+El menú permite configurar audio y micrófono, conexiones, fondo de pantalla,
+separación de ventanas y capturas, además de editar o recargar la barra y
+bloquear la pantalla.
 
-La fecha queda sola en el centro, en español (`es_AR.UTF-8`, disponible con
-`locales-all`). Un solo panel; sin control DDC ni panel por monitor.
-El tema no repara drivers/audio: si aparece Dummy Output, diagnosticá
-PipeWire/WirePlumber antes de atribuirlo a los atajos.
+- **Brillo:** el indicador `% SW` controla atenuación por software, no la
+  retroiluminación física. No reduce el consumo de la pantalla y se restablece
+  al reiniciar X11.
+- **Batería:** muestra icono y porcentaje; indica carga o alimentación externa
+  y se pone rojo al bajar a 15 %. Queda vacío en equipos sin batería.
+- **Pomodoro:** concentración de 25 minutos, descansos de 5 minutos y uno de
+  15 cada cuatro sesiones. Notifica al terminar y deja pausada la siguiente
+  etapa. Su estado se guarda en `~/.local/state/polybar-pomodoro/` y se conserva
+  al recargar la barra. Las notificaciones requieren un servicio de
+  notificaciones activo en la sesión.
+- **Teclado:** algunos atajos usan `ñ` y suponen una distribución española.
+  Los atajos con flechas también están disponibles.
 
-## Comprobar y recuperar
+## Ajustes opcionales por equipo
 
-Dentro de una sesión X11 con i3 y Rofi instalados:
+La configuración detecta las interfaces Ethernet/Wi-Fi y la pantalla activa.
+Para el brillo, prefiere la pantalla primaria. La selección de red se hace
+al iniciar la barra; recargala si cambiás de interfaz.
+
+Para agregar comandos de inicio propios del equipo, editá
+`~/.config/i3/local.conf`. El instalador conserva este archivo y no lo sube
+al repositorio. Podés usarlo para programas de inicio, ajustes de pantalla
+o un agente de autenticación de privilegios.
+
+Para fijar las interfaces o la pantalla, creá `~/.config/polybar/local.env`
+con las variables que necesites:
+
+```sh
+ETHERNET_INTERFACE=nombre_de_interfaz_ethernet
+WIFI_INTERFACE=nombre_de_interfaz_wifi
+BRIGHTNESS_OUTPUT=nombre_de_salida_de_pantalla
+```
+
+Reemplazá los valores por los nombres que muestran estos comandos:
+
+```bash
+nmcli device
+xrandr --listmonitors
+```
+
+Si la detección automática funciona, no hace falta crear `local.env`.
+Este archivo se ejecuta como shell con tu usuario: usá solo contenido que
+hayas revisado. Ni este archivo ni `local.conf` se incluyen en Git.
+Los fondos de pantalla y `~/.fehbg` también permanecen locales.
+
+## Restaurar la configuración anterior
+
+El instalador imprime la ubicación del respaldo. Para recuperar un archivo:
+
+1. Quitá su enlace de `~/.config`.
+2. Copiá el archivo correspondiente del respaldo a esa misma ubicación.
+3. Reiniciá i3 con **Super+Shift+R**.
+
+Los respaldos se conservan al actualizar.
+
+## Comprobar la configuración
+
+Dentro del repositorio, en una sesión X11 con i3 y Rofi instalados:
 
 ```bash
 python3 check.py
 python3 -m unittest discover -s config/polybar -p 'test_*.py'
 ```
 
-Comprueba selección de pantalla, brillo, rutas del menú, shell, configuración
-real de i3/Rofi, respaldos, instalación repetida y recuperación ante error.
-Usa directorios temporales; no modifica la configuración activa ni el brillo.
-No demuestra pulsaciones físicas de teclado ni sonido audible.
-
-Para restaurar un archivo, reemplazá su enlace por la copia correspondiente
-al respaldo que imprimió el instalador y reiniciá i3. Los respaldos no se borran
-al actualizar. Fondos de pantalla y `~/.fehbg` permanecen locales.
+Las pruebas usan directorios temporales y no modifican la configuración
+activa ni el brillo. Comprueban scripts, configuración y comportamiento del
+instalador; no sustituyen una comprobación manual de teclado, audio y pantalla.
