@@ -5,14 +5,16 @@ command -v polybar >/dev/null
 if [ -f "$HOME/.config/polybar/local.env" ]; then
     . "$HOME/.config/polybar/local.env"
 fi
-if [ -z "${NETWORK_INTERFACE:-}" ]; then
-    NETWORK_INTERFACE=$(nmcli -t -f DEVICE,TYPE,STATE device | python3 -c 'import sys
+detect_interface() {
+    LC_ALL=C nmcli -t -f DEVICE,TYPE,STATE device | python3 -c 'import sys
 interfaces = [line.strip().split(":") for line in sys.stdin]
-physical = [fields for fields in interfaces if len(fields) == 3 and fields[1] in ("ethernet", "wifi") and fields[2] != "unmanaged"]
+physical = [fields for fields in interfaces if len(fields) == 3 and fields[1] == sys.argv[1] and fields[2] != "unmanaged"]
 connected = [fields for fields in physical if fields[2] == "connected"]
-print((connected or physical or [[""]])[0][0])')
-fi
-export NETWORK_INTERFACE BRIGHTNESS_OUTPUT
+print((connected or physical or [[""]])[0][0])' "$1"
+}
+ETHERNET_INTERFACE=${ETHERNET_INTERFACE:-$(detect_interface ethernet)}
+WIFI_INTERFACE=${WIFI_INTERFACE:-$(detect_interface wifi)}
+export ETHERNET_INTERFACE WIFI_INTERFACE BRIGHTNESS_OUTPUT
 runtime="${XDG_RUNTIME_DIR:-$HOME/.cache}/polybar"
 mkdir -p "$runtime"
 exec 9>"$runtime/launch.lock"

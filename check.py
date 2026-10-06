@@ -34,15 +34,16 @@ with patch.dict(os.environ, {}, clear=True):
             raise AssertionError('Invalid monitor override accepted')
 subprocess.run(['python3', str(ROOT / 'config/polybar/brightness.py'), '--self-test'], check=True)
 subprocess.run(['python3', str(ROOT / 'config/polybar/check.py')], check=True)
+subprocess.run(['python3', '-m', 'unittest', 'discover', '-s', str(ROOT / 'config/polybar'), '-p', 'test_*.py'], check=True)
 launch = (ROOT / 'config/polybar/launch.sh').read_text()
-network_parser = launch.split("python3 -c '", 1)[1].split("')", 1)[0]
-for inventory, expected in (
-    ('tun0:tun:connected\nenp5s0:ethernet:connected\nwlan0:wifi:disconnected\n', 'enp5s0'),
-    ('enp1s0:ethernet:disconnected\nwlan0:wifi:connected\n', 'wlan0'),
-    ('wlan0:wifi:disconnected\nveth0:ethernet:unmanaged\n', 'wlan0'),
-    ('lo:loopback:connected\n', ''),
+network_parser = launch.split("python3 -c '", 1)[1].split("' \"$1\"", 1)[0]
+for kind, inventory, expected in (
+    ('ethernet', 'tun0:tun:connected\nenp5s0:ethernet:connected\nwlan0:wifi:disconnected\n', 'enp5s0'),
+    ('wifi', 'enp1s0:ethernet:connected\nwlan0:wifi:connected\n', 'wlan0'),
+    ('wifi', 'wlan0:wifi:disconnected\nveth0:ethernet:unmanaged\n', 'wlan0'),
+    ('ethernet', 'lo:loopback:connected\n', ''),
 ):
-    detected = subprocess.check_output(['python3', '-c', network_parser], input=inventory, text=True).strip()
+    detected = subprocess.check_output(['python3', '-c', network_parser, kind], input=inventory, text=True).strip()
     assert detected == expected, (inventory, detected)
 for script in (ROOT / 'config/polybar').glob('*.sh'):
     subprocess.run(['sh', '-n', str(script)], check=True)

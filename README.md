@@ -1,7 +1,8 @@
 # i3-dotfiles
 
 Configuración compartida de i3, Polybar y Rofi: tema oscuro/azul, atajos,
-menú de configuración, volumen, red y atenuación de pantalla por software.
+menú de configuración, volumen, Ethernet/Wi-Fi, batería, Pomodoro y
+atenuación de pantalla por software. Fecha en español y reloj centrado.
 Sin claves SSH, contraseñas, IP privadas ni configuraciones de servicios personales.
 
 ## Instalar en otra PC
@@ -17,14 +18,14 @@ sudo apt update
 sudo apt install git python3 i3-wm polybar rofi alacritty pavucontrol \
   feh flameshot zenity nautilus network-manager network-manager-gnome \
   xss-lock i3lock dex x11-xserver-utils util-linux pipewire-audio \
-  fonts-jetbrains-mono fonts-font-awesome
+  fonts-jetbrains-mono fonts-font-awesome locales-all libglib2.0-bin
 ```
 
-El repositorio es privado: primero autorizá tu cuenta GitHub en ese equipo.
-No copies claves privadas de otra PC.
+El repositorio es público; para hacer push necesitás autorizar tu cuenta
+GitHub en ese equipo. No copies claves privadas de otra PC.
 
 ```bash
-git clone git@github.com:ramirosandoval/i3-dotfiles.git ~/i3-dotfiles
+git clone https://github.com/ramirosandoval/i3-dotfiles.git ~/i3-dotfiles
 cd ~/i3-dotfiles
 python3 install.py
 ```
@@ -67,14 +68,16 @@ no existe en los equipos revisados. Si necesitás un agente para diálogos de
 privilegios, instalá uno y agregá su comando a `local.conf` (por ejemplo
 `lxpolkit`, paquete `lxpolkit` en Debian 13).
 
-Polybar elige una interfaz Ethernet/Wi-Fi conectada; si está desconectado,
-usa la primera interfaz física administrada. Ignora bridges y VPN.
+Polybar muestra Ethernet y Wi-Fi por separado, con acceso a `nmtui`.
+Para cada tipo elige una interfaz conectada; si está desconectado, usa la
+primera interfaz física administrada. Ignora bridges y VPN.
 La selección se hace al arrancar la barra: recargala al cambiar de interfaz.
 El brillo usa la pantalla primaria activa, o la primera activa si no hay primaria.
 Podés fijar ambos en `~/.config/polybar/local.env`, fuera de Git:
 
 ```sh
-NETWORK_INTERFACE=enp1s0
+ETHERNET_INTERFACE=enp1s0
+WIFI_INTERFACE=wlp0s20f3
 BRIGHTNESS_OUTPUT=eDP-1
 ```
 
@@ -96,7 +99,17 @@ archivos de terceros que no hayas revisado.
 - Se conservan los atajos de escritorios, movimiento, resize y bloqueo.
   Los atajos con `ñ` suponen teclado español; las flechas siguen disponibles.
 
-Un solo panel Polybar; no se añade batería, control DDC ni panel por monitor.
+- **Batería**: solo icono y porcentaje; rayo al cargar, enchufe si está
+  conectada y rojo al bajar a 15%. Sin batería, el indicador queda vacío.
+- **Pomodoro**, después de los escritorios: solo reloj y `MM:SS`; clic
+  izquierdo inicia/pausa/continúa, clic derecho reinicia a 25:00.
+  Concentración de 25 minutos, descanso de 5 y descanso de 15 cada cuatro
+  sesiones. Notifica al terminar y deja la siguiente etapa pausada.
+  El reloj es azul al trabajar y verde al descansar. Estado local en
+  `~/.local/state/polybar-pomodoro/`, fuera de Git; recargar no reinicia.
+
+La fecha queda sola en el centro, en español (`es_AR.UTF-8`, disponible con
+`locales-all`). Un solo panel; sin control DDC ni panel por monitor.
 El tema no repara drivers/audio: si aparece Dummy Output, diagnosticá
 PipeWire/WirePlumber antes de atribuirlo a los atajos.
 
@@ -106,6 +119,7 @@ Dentro de una sesión X11 con i3 y Rofi instalados:
 
 ```bash
 python3 check.py
+python3 -m unittest discover -s config/polybar -p 'test_*.py'
 ```
 
 Comprueba selección de pantalla, brillo, rutas del menú, shell, configuración
