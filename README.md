@@ -87,6 +87,9 @@ El menú permite configurar audio y micrófono, conexiones, fondo de pantalla,
 separación de ventanas y capturas, además de editar o recargar la barra y
 bloquear la pantalla.
 
+- **Micrófono:** icono verde cuando está habilitado, tachado rojo cuando está
+  silenciado y gris con `?` si no hay una entrada real disponible. Se actualiza
+  al cambiar el silencio desde el teclado u otra aplicación.
 - **Brillo:** el indicador `% SW` controla atenuación por software, no la
   retroiluminación física. No reduce el consumo de la pantalla y se restablece
   al reiniciar X11.
