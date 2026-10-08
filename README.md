@@ -24,7 +24,8 @@ sudo apt update
 sudo apt install git python3 i3-wm polybar rofi alacritty pavucontrol \
   feh flameshot zenity nautilus network-manager network-manager-gnome \
   xss-lock i3lock dex x11-xserver-utils util-linux pipewire-audio \
-  fonts-jetbrains-mono fonts-font-awesome locales-all libglib2.0-bin
+  fonts-jetbrains-mono fonts-font-awesome locales-all libglib2.0-bin \
+  pipewire-bin sound-theme-freedesktop
 ```
 
 En otras distribuciones, instalá los paquetes equivalentes antes de continuar.
@@ -81,7 +82,7 @@ los archivos nuevos sin reemplazar los ajustes locales.
 | Rueda sobre el sol | Ajustar la atenuación entre 20 % y 100 %, en pasos de 5 % |
 | Clic sobre el sol | Restaurar el 100 % |
 | Clic izquierdo sobre Pomodoro | Iniciar, pausar o continuar |
-| Clic derecho sobre Pomodoro | Reiniciar a 25:00 |
+| Clic derecho sobre Pomodoro | Elegir tarea de 25 min, descanso de 5/15 min o reiniciar el ciclo |
 
 El menú permite configurar audio y micrófono, conexiones, fondo de pantalla,
 separación de ventanas y capturas, además de editar o recargar la barra y
@@ -96,10 +97,18 @@ bloquear la pantalla.
 - **Batería:** muestra icono y porcentaje; indica carga o alimentación externa
   y se pone rojo al bajar a 15 %. Queda vacío en equipos sin batería.
 - **Pomodoro:** concentración de 25 minutos, descansos de 5 minutos y uno de
-  15 cada cuatro sesiones. Notifica al terminar y deja pausada la siguiente
-  etapa. Su estado se guarda en `~/.local/state/polybar-pomodoro/` y se conserva
+  15 cada cuatro sesiones. El menú de clic derecho permite elegir la etapa
+  manualmente; se prepara pausada con la duración completa, sin contar una
+  sesión terminada. Clic izquierdo para empezar. Cancelar el menú no cambia
+  el temporizador. “Reiniciar ciclo” vuelve a 25:00 y borra el contador.
+  Notifica al terminar y deja pausada la siguiente etapa. Al completar una
+  tarea reproduce una sola vez un sonido breve (`complete.oga`) con `pw-play`
+  al 50 % del volumen del flujo; no cambia el volumen general, ni suena al
+  cambiar de etapa manualmente o al terminar un descanso.
+  Su estado se guarda en `~/.local/state/polybar-pomodoro/` y se conserva
   al recargar la barra. Las notificaciones requieren un servicio de
-  notificaciones activo en la sesión.
+  notificaciones activo en la sesión; el sonido requiere PipeWire y los
+  paquetes `pipewire-bin` y `sound-theme-freedesktop`.
 - **Teclado:** algunos atajos usan `ñ` y suponen una distribución española.
   Los atajos con flechas también están disponibles.
 

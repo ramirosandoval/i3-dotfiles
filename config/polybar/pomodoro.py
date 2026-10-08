@@ -7,6 +7,11 @@ def initial():
 
 def step(state, action, now):
     state = dict(state)
+    durations = {'work': 1500, 'short-break': 300, 'long-break': 900}
+    if action in durations:
+        state.update(phase='work' if action == 'work' else 'break',
+                     remaining=durations[action], running=False, stamp=now)
+        return state, None
     if state['running']:
         state['remaining'] = max(0, state['remaining'] - max(0, now - state['stamp']))
         state['stamp'] = now
@@ -30,6 +35,26 @@ def step(state, action, now):
     return state, event
 
 
+def select_action():
+    import subprocess
+    choices = {
+        'Tarea · 25 minutos': 'work',
+        'Descanso · 5 minutos': 'short-break',
+        'Descanso largo · 15 minutos': 'long-break',
+        'Reiniciar ciclo': 'reset',
+    }
+    try:
+        result = subprocess.run(
+            ['rofi', '-dmenu', '-i', '-no-custom', '-p', 'Pomodoro',
+             '-mesg', 'Elegí una etapa. Clic izquierdo en el reloj para iniciar.'],
+            input='\n'.join(choices) + '\n', text=True, capture_output=True,
+            check=False,
+        )
+    except OSError:
+        return None
+    return choices.get(result.stdout.strip()) if result.returncode == 0 else None
+
+
 def main():
     import fcntl
     import json
@@ -41,8 +66,12 @@ def main():
     import time
 
     action = sys.argv[1] if len(sys.argv) > 1 else 'status'
-    if action not in ('status', 'toggle', 'reset'):
-        raise SystemExit('Use: status, toggle, reset')
+    if action == 'menu':
+        action = select_action()
+        if action is None:
+            return
+    if action not in ('status', 'toggle', 'reset', 'work', 'short-break', 'long-break'):
+        raise SystemExit('Use: status, toggle, reset, menu, work, short-break, long-break')
     directory = Path(os.environ.get('POMODORO_STATE_DIR', str(Path.home() / '.local/state/polybar-pomodoro')))
     directory.mkdir(parents=True, exist_ok=True)
     path = directory / 'state.json'
@@ -68,6 +97,15 @@ def main():
                 ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=3, check=False)
             except (OSError, subprocess.TimeoutExpired):
                 pass
+    if event and state['phase'] == 'break':
+        try:
+            subprocess.run([
+                'pw-play', '--volume=0.5',
+                '/usr/share/sounds/freedesktop/stereo/complete.oga',
+            ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                timeout=3, check=False)
+        except (OSError, subprocess.TimeoutExpired):
+            pass
     seconds = max(0, math.ceil(state['remaining']))
     color = '#a6da95' if state['phase'] == 'break' else '#8aadf4'
     print(f'%{{F{color}}}\uf017%{{F-}} {seconds // 60:02}:{seconds % 60:02}')
