@@ -79,6 +79,7 @@ los archivos nuevos sin reemplazar los ajustes locales.
 | Clic sobre volumen | Silenciar o restaurar la salida de audio |
 | Clic derecho sobre volumen | Abrir Pavucontrol |
 | Clic sobre Ethernet o Wi-Fi | Abrir el selector de conexiones |
+| Clic sobre la pantalla | Elegir una resolución disponible; confirmar en 15 segundos o volver a la anterior |
 | Rueda sobre el sol | Ajustar la atenuación entre 20 % y 100 %, en pasos de 5 % |
 | Clic sobre el sol | Restaurar el 100 % |
 | Clic izquierdo sobre Pomodoro | Iniciar, pausar o continuar |
@@ -102,13 +103,22 @@ bloquear la pantalla.
   sesión terminada. Clic izquierdo para empezar. Cancelar el menú no cambia
   el temporizador. “Reiniciar ciclo” vuelve a 25:00 y borra el contador.
   Notifica al terminar y deja pausada la siguiente etapa. Al completar una
-  tarea reproduce una sola vez un sonido breve (`complete.oga`) con `pw-play`
+  tarea o un descanso reproduce una sola vez un sonido breve (`complete.oga`) con `pw-play`
   al 50 % del volumen del flujo; no cambia el volumen general, ni suena al
-  cambiar de etapa manualmente o al terminar un descanso.
+  cambiar de etapa manualmente, pausar o reiniciar.
   Su estado se guarda en `~/.local/state/polybar-pomodoro/` y se conserva
   al recargar la barra. Las notificaciones requieren un servicio de
   notificaciones activo en la sesión; el sonido requiere PipeWire y los
   paquetes `pipewire-bin` y `sound-theme-freedesktop`.
+- **Pantalla:** botón con icono sin texto. Lista las resoluciones anunciadas
+  por XRandR y marca la actual; con varias pantallas activas permite elegir
+  cuál modificar. Cancelar no cambia nada. Si no se confirma en 15 segundos,
+  restaura la resolución y frecuencia anteriores. No activa salidas apagadas.
+- **Barra compacta:** márgenes de 4 px, escritorios con padding reducido y
+  red indicada mediante iconos (verde conectada, gris desconectada). Fecha
+  centrada, sin reducir la fuente. Diseño comprobado visualmente en la
+  configuración local a 1280×720, 1368×768, 1600×900 y 1920×1080; la cantidad
+  de escritorios e iconos de bandeja puede variar entre equipos.
 - **Teclado:** algunos atajos usan `ñ` y suponen una distribución española.
   Los atajos con flechas también están disponibles.
 

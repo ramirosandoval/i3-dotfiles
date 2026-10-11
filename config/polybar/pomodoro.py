@@ -97,7 +97,7 @@ def main():
                 ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=3, check=False)
             except (OSError, subprocess.TimeoutExpired):
                 pass
-    if event and state['phase'] == 'break':
+    if event:
         try:
             subprocess.run([
                 'pw-play', '--volume=0.5',

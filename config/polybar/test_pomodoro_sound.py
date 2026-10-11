@@ -16,8 +16,8 @@ class PomodoroSoundTest(unittest.TestCase):
     def test_work_completion_plays_once(self):
         self.check_completion('work', expected_plays=1)
 
-    def test_break_completion_does_not_play_work_alarm(self):
-        self.check_completion('break', expected_plays=0)
+    def test_break_completion_plays_once(self):
+        self.check_completion('break', expected_plays=1)
 
     def check_completion(self, phase, expected_plays):
         spec = importlib.util.spec_from_file_location('pomodoro_sound', SCRIPT)
