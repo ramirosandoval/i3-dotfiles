@@ -55,7 +55,29 @@ iniciar sesión. El instalador no reinicia el escritorio automáticamente.
 
 ## Actualizar
 
-En cada equipo:
+El botón **** junto al engranaje consulta `origin/main` únicamente al hacer
+clic. No hay sondeo en segundo plano. Si hay commits nuevos, muestra la
+cantidad y revisión, y pide confirmación antes de ejecutar el instalador.
+Solo acepta el origin HTTPS exacto de este repositorio y una rama `main`
+limpia, incluidos archivos sin seguimiento. Rechaza divergencias y commits
+locales: nunca hace reset, rebase ni descarta trabajo.
+
+La instalación automática es conservadora: se bloquea si reemplazaría
+archivos locales diferentes o si la revisión entrante elimina el botón.
+Primero hay que integrar esas personalizaciones manualmente. En una
+instalación enlazada al repositorio puede avanzar sin esa divergencia.
+Tras aplicar la revisión confirmada y el instalador con respaldos, recarga
+solo Polybar; no reinicia i3 ni el audio. Si falla después del avance Git,
+informa que requiere revisión manual; no revierte Git automáticamente.
+El actualizador espera el clon en `~/i3-dotfiles`.
+
+Para consultar sin diálogos ni instalación:
+
+```bash
+python3 ~/.config/polybar/update.py --check
+```
+
+También podés actualizar manualmente en cada equipo:
 
 ```bash
 cd ~/i3-dotfiles
@@ -78,6 +100,7 @@ los archivos nuevos sin reemplazar los ajustes locales.
 | Rueda sobre volumen | Ajustar el volumen |
 | Clic sobre volumen | Silenciar o restaurar la salida de audio |
 | Clic derecho sobre volumen | Abrir Pavucontrol |
+| Clic sobre  | Consultar actualizaciones del repositorio y confirmar su instalación segura |
 | Clic sobre Ethernet o Wi-Fi | Abrir el selector de conexiones |
 | Clic sobre la pantalla | Elegir una resolución disponible; confirmar en 15 segundos o volver a la anterior |
 | Rueda sobre el sol | Ajustar la atenuación entre 20 % y 100 %, en pasos de 5 % |
