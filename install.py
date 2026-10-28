@@ -46,7 +46,7 @@ def install(home):
 
 
 if __name__ == '__main__':
-    required = ('i3', 'polybar', 'rofi', 'python3', 'ip', 'nmcli', 'xrandr', 'flock', 'wpctl', 'pavucontrol', 'nm-connection-editor', 'alacritty', 'nautilus', 'flameshot', 'zenity', 'feh', 'xss-lock', 'i3lock', 'dex', 'nm-applet', 'nmtui', 'gdbus', 'pw-play')
+    required = ('i3', 'polybar', 'rofi', 'python3', 'ip', 'nmcli', 'xrandr', 'flock', 'wpctl', 'pavucontrol', 'nm-connection-editor', 'alacritty', 'nautilus', 'flameshot', 'zenity', 'feh', 'xss-lock', 'i3lock', 'dex', 'nm-applet', 'nmtui', 'gdbus', 'pw-play', 'bluetoothctl')
     missing = [command for command in required if not shutil.which(command)]
     if missing:
         raise SystemExit('Install missing commands first: ' + ', '.join(missing))

@@ -1,7 +1,7 @@
 # i3-dotfiles
 
 Personalización de i3 con Polybar y Rofi: tema oscuro con acentos azules,
-lanzador de aplicaciones, controles de audio y red, brillo por software,
+lanzador de aplicaciones, controles de audio, red y Bluetooth, brillo por software,
 batería y Pomodoro.
 
 ## Requisitos
@@ -25,7 +25,7 @@ sudo apt install git python3 i3-wm polybar rofi alacritty pavucontrol \
   feh flameshot zenity nautilus network-manager network-manager-gnome \
   xss-lock i3lock dex x11-xserver-utils util-linux pipewire-audio \
   fonts-jetbrains-mono fonts-font-awesome locales-all libglib2.0-bin \
-  pipewire-bin sound-theme-freedesktop
+  pipewire-bin sound-theme-freedesktop bluez libspa-0.2-bluetooth
 ```
 
 En otras distribuciones, instalá los paquetes equivalentes antes de continuar.
@@ -102,6 +102,7 @@ los archivos nuevos sin reemplazar los ajustes locales.
 | Clic derecho sobre volumen | Abrir Pavucontrol |
 | Clic sobre  | Consultar actualizaciones del repositorio y confirmar su instalación segura |
 | Clic sobre Ethernet o Wi-Fi | Abrir el selector de conexiones |
+| Clic sobre Bluetooth | Buscar y vincular dispositivos, conectar, desconectar u olvidarlos, y encender o apagar el adaptador |
 | Clic sobre la pantalla | Elegir una resolución disponible; confirmar en 15 segundos o volver a la anterior |
 | Rueda sobre el sol | Ajustar la atenuación entre 20 % y 100 %, en pasos de 5 % |
 | Clic sobre el sol | Restaurar el 100 % |
@@ -137,6 +138,11 @@ bloquear la pantalla.
   por XRandR y marca la actual; con varias pantallas activas permite elegir
   cuál modificar. Cancelar no cambia nada. Si no se confirma en 15 segundos,
   restaura la resolución y frecuencia anteriores. No activa salidas apagadas.
+- **Bluetooth:** icono gris con el adaptador apagado, azul encendido y verde
+  con el nombre del dispositivo conectado. “Buscar y vincular” escanea 10
+  segundos; el dispositivo debe estar en modo vinculación. Al elegirlo se
+  vincula, se marca como confiable y se conecta. Usa `bluetoothctl` (paquete
+  `bluez`); el audio requiere `libspa-0.2-bluetooth`.
 - **Barra compacta:** márgenes de 4 px, escritorios con padding reducido y
   red indicada mediante iconos (verde conectada, gris desconectada). Fecha
   centrada, sin reducir la fuente. Diseño comprobado visualmente en la
